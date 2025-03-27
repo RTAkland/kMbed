@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 /*
  * Copyright 2025 Karma Krafts & associates
@@ -32,29 +30,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-@OptIn(ExperimentalWasmDsl::class)
-kotlin {
+@OptIn(ExperimentalWasmDsl::class) kotlin {
     jvmToolchain(java.toolchain.languageVersion.get().asInt())
     jvm()
     mingwX64()
     linuxX64()
     linuxArm64()
-    macosX64()
-    macosArm64()
-    androidNativeX64()
-    androidNativeArm64()
-    androidNativeArm32()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    js {
-        browser()
-        nodejs()
-    }
-    wasmJs {
-        browser()
-        nodejs()
-    }
     applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
@@ -80,30 +61,12 @@ dokka {
     }
 }
 
-val dokkaJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.dokkaGeneratePublicationHtml)
-    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-tasks {
-    System.getProperty("publishDocs.root")?.let { docsDir ->
-        register("publishDocs", Copy::class) {
-            dependsOn(dokkaJar)
-            mustRunAfter(dokkaJar)
-            from(zipTree(dokkaJar.get().outputs.files.first()))
-            into(docsDir)
-        }
-    }
-}
-
 publishing {
     repositories {
         with(CI) { authenticatedPackageRegistry() }
     }
     publications.configureEach {
         if (this is MavenPublication) {
-            artifact(dokkaJar)
             pom {
                 name = project.name
                 description = "Ktor extensions for the KMbed runtime to allow serving static, embedded content."

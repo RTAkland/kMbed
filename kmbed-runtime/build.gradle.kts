@@ -39,22 +39,6 @@ kotlin {
     mingwX64()
     linuxX64()
     linuxArm64()
-    macosX64()
-    macosArm64()
-    androidNativeX64()
-    androidNativeArm64()
-    androidNativeArm32()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    js {
-        browser()
-        nodejs()
-    }
-    wasmJs {
-        browser()
-        nodejs()
-    }
     applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
@@ -105,30 +89,12 @@ dokka {
     }
 }
 
-val dokkaJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.dokkaGeneratePublicationHtml)
-    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-tasks {
-    System.getProperty("publishDocs.root")?.let { docsDir ->
-        register("publishDocs", Copy::class) {
-            dependsOn(dokkaJar)
-            mustRunAfter(dokkaJar)
-            from(zipTree(dokkaJar.get().outputs.files.first()))
-            into(docsDir)
-        }
-    }
-}
-
 publishing {
     repositories {
         with(CI) { authenticatedPackageRegistry() }
     }
     publications.configureEach {
         if (this is MavenPublication) {
-            artifact(dokkaJar)
             pom {
                 name = project.name
                 description = "Embedded resource runtime for Kotlin/Native."

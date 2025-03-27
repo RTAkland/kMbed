@@ -96,17 +96,11 @@ object CI {
     }
 
     fun RepositoryHandler.authenticatedPackageRegistry() {
-        System.getenv("CI_API_V4_URL")?.let { apiUrl ->
-            maven {
-                url = URI.create("$apiUrl/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
-                name = "GitLab"
-                credentials(HttpHeaderCredentials::class) {
-                    name = "Job-Token"
-                    value = System.getenv("CI_JOB_TOKEN")
-                }
-                authentication {
-                    create("header", HttpHeaderAuthentication::class)
-                }
+        maven {
+            url = URI.create("https://maven.rtast.cn/releases/")
+            credentials {
+                username = "RTAkland"
+                password = System.getenv("PUBLISH_TOKEN")
             }
         }
     }

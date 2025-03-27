@@ -30,7 +30,7 @@ allprojects {
         mavenLocal()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-        maven("https://files.karmakrafts.dev/maven")
+        maven("https://repo.maven.rtast.cn/releases")
     }
 
     if (CI.isCI) {

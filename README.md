@@ -26,7 +26,9 @@ First, add the required maven repository:
 
 ```kotlin
 repositories {
-    maven("https://files.karmakrafts.dev/maven")
+    maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+    maven("https://repo.maven.rtast.cn/releases")
+//    maven("https://files.karmakrafts.dev/maven")
 }
 ```
 
